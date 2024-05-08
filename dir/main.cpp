@@ -1,12 +1,11 @@
-#include <iostream>
+#include "../include/BSTree.hpp"
 
-#define PROJECT_NAME "test-project"
-
-int main(int argc, char **argv) {
-    if(argc != 1) {
-        std::cout << argv[0] <<  "takes no arguments.\n";
-        return 1;
-    }
-    std::cout << "This is project " << PROJECT_NAME << ".\n";
+int main() {
+    BSTree first;
+    first.add_element(5);
+    first.add_element(4);
+    first.add_element(3);
+    first.add_element(2);
+    first.add_element(1);
     return 0;
 }
