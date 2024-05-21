@@ -30,12 +30,15 @@ void BSTree::clear(Node* node) {
 }
 
 void BSTree::save_to_file_helper(std::ofstream& file, Node* node) {
-  if (node != nullptr) {
-    file << node->data << " ";
-    save_to_file_helper(file, node->left);
-    save_to_file_helper(file, node->right);
-  }
+    if (node != nullptr) {
+        file << node->data << " ";
+        save_to_file_helper(file, node->left);
+        save_to_file_helper(file, node->right);
+    } else {
+        file << "# "; // Using "#" to represent null nodes
+    }
 }
+
 
 Node* BSTree::get_successor(Node* node) {
   Node* current = node->right;
@@ -46,14 +49,29 @@ Node* BSTree::get_successor(Node* node) {
 }
 
 Node* BSTree::load_from_file_helper(std::ifstream& file) {
-  int value;
-  if (file >> value) {
+    std::string data;
+    file >> data;
+    if (data == "#") {
+        return nullptr; // Null node
+    }
+    int value = std::stoi(data);
     Node* newNode = new Node(value);
     newNode->left = load_from_file_helper(file);
     newNode->right = load_from_file_helper(file);
     return newNode;
-  }
-  return nullptr;
+}
+
+
+bool BSTree::compare_trees(const Node* node1, const Node* node2) const {
+    if (node1 == nullptr && node2 == nullptr) {
+        return true;
+    }
+    if (node1 != nullptr && node2 != nullptr) {
+        return (node1->data == node2->data) &&
+               compare_trees(node1->left, node2->left) &&
+               compare_trees(node1->right, node2->right);
+    }
+    return false;
 }
 
 bool BSTree::add_element(int value) {
@@ -178,6 +196,10 @@ bool BSTree::load_from_file(const std::string& path) {
   root = load_from_file_helper(file);
   file.close();
   return true;
+}
+
+bool BSTree::operator==(const BSTree& rhv) const {
+    return compare_trees(root, rhv.root);
 }
 
 BSTree::~BSTree() { clear(root); }
